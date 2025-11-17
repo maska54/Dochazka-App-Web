@@ -3,179 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docházkový Lístek (Tmavý Režim a Rychlé Zadávání)</title>
+    <title>Docházkový Lístek</title>
     <style>
-        /* ----- BARVY PRO TMÝVÝ REŽIM A VZHLED ----- */
+        /* Základní styly pro mobil */
         body {
             font-family: sans-serif;
             margin: 0;
             padding: 15px;
-            /* Tmavé pozadí */
-            background-color: #212121; 
-            color: #f0f0f0; 
+            background-color: #f4f4f9;
         }
 
         h1 {
-            color: #f0f0f0;
+            color: #333;
             text-align: center;
             font-size: 1.5em;
             margin-bottom: 20px;
         }
-        
-        /* Barva upozornění */
-        .warning-text {
-            color: #dc3545;
-            text-align: center;
-            font-weight: bold;
-            margin: 15px 0;
-            font-size: 0.9em;
-        }
 
-        /* Styl pro Měsíc/Rok (hlavička) */
-        .month-year-controls {
-            display: flex;
-            justify-content: space-between;
-            background-color: #333; /* Tmavá barva */
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-            margin-bottom: 15px;
-        }
-
-        .month-year-controls label {
-            color: #ccc;
-        }
-
-        /* VSTUPNÍ POLE: ČISTĚ BÍLÝ TEXT (#FFFFFF) */
-        .month-year-controls input[type="text"],
-        .month-year-controls input[type="number"] {
-            background-color: #555; 
-            color: #FFFFFF; /* ČISTĚ BÍLÁ */
-            border: 1px solid #444;
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-        
-        /* ----- Styly pro denní karty ----- */
+        /* Kontejner pro zobrazení karty na mobilu */
         .day-card {
-            background-color: #333; 
-            color: #f0f0f0;
+            background-color: white;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
-            border-left: 5px solid #007bff; /* Modrý proužek */
+            border-left: 5px solid #007bff;
         }
 
-        /* VÍKENDY */
-        .weekend-card {
-            background-color: #3d3333; /* Tmavě červené pozadí pro víkendy */
-            border-left: 5px solid #dc3545; /* Červený proužek */
-        }
-        
         .day-label {
             font-weight: bold;
             font-size: 1.1em;
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .weekend-day-label {
-            color: #dc3545; /* Červená barva textu pro víkendy */
-        }
-        
-        .weekday-label {
-            color: #007bff; /* Modrá barva pro pracovní dny */
+            color: #007bff;
         }
 
-        /* Styly pro vstupní pole času (TEXT) a poznámky */
-        .time-entry input[type="text"],
-        .note-input-row input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            /* Tmavé vstupní boxy */
-            background-color: #555; 
-            color: #FFFFFF; /* ČISTĚ BÍLÁ */
-            border: 1px solid #444;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
+        /* Rozvržení inputů do dvou sloupců */
+        .time-entry {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
         }
 
         .time-entry label {
-            color: #ccc;
+            flex-basis: 45%;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .time-entry input[type="time"] {
+            flex-basis: 50%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Zahrne padding do šířky */
+            font-size: 1em;
+        }
+
+        /* Speciální styl pro výsledek */
+        .result-hours {
+            margin-top: 15px;
+            padding: 8px 0;
+            border-top: 1px dashed #ccc;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
         }
         
-        /* Součet hodin */
+        /* Celkový součet hodin */
         #totalHours {
             margin-top: 20px;
             padding: 15px;
-            background-color: #333; 
+            background-color: #e9ecef;
             border-radius: 8px;
             text-align: center;
             font-size: 1.2em;
             font-weight: bold;
-            color: #007bff; 
-        }
-        
-        /* Ovládací prvky */
-        .controls {
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .controls button {
-            width: 100%;
-            padding: 15px 0;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #archiveButton {
-            background-color: #ffc107;
             color: #333;
         }
-
-        #clearButton {
-            background-color: #dc3545;
-            color: white;
-        }
-        
-        .archive-info {
-            font-size: 0.8em;
-            color: #6c757d;
-            margin-top: 10px;
-        }
-        
     </style>
 </head>
-<body onload="init()">
+<body>
 
     <h1>KONTROLNÍ LÍSTEK Docházka</h1>
-    
-    <div class="month-year-controls">
-        <div>
-            <label for="month_input">Měsíc (MM):</label>
-            <input type="text" id="month_input" placeholder="např. 11" onchange="regenerateCards(); loadData()">
-        </div>
-        <div>
-            <label for="year_input">Rok (RRRR):</label>
-            <input type="number" id="year_input" placeholder="např. 2025" onchange="regenerateCards(); loadData()">
-        </div>
-    </div>
 
-    <p class="warning-text">NESPRÁVNÉ ZNÁMKOVÁNÍ SE TRESTA</p>
-    
     <div id="attendance-list">
         </div>
 
@@ -183,175 +93,37 @@
         Celkem hodin: <span id="totalValue">0.00</span>
     </div>
 
-    <div class="controls">
-        <button id="archiveButton" onclick="archiveData()">
-            Archivovat data (Info)
-        </button>
-        <button id="clearButton" onclick="clearData()">
-            Smazat data (Aktuální měsíc)
-        </button>
-        <div class="archive-info">
-            Data jsou uložena pod klíčem aktuálně zadaného Měsíce/Roku. Změnou hodnoty se přepneš na archivovanou zálohu.
-        </div>
-    </div>
-
     <script>
-        const ATTENDANCE_DAYS = 31;
+        const ATTENDANCE_DAYS = 31; // Počet dní v měsíci
         const attendanceList = document.getElementById('attendance-list');
         const totalValueSpan = document.getElementById('totalValue');
         const timeInputs = [];
 
-        const monthInput = document.getElementById('month_input');
-        const yearInput = document.getElementById('year_input');
-        const dayNames = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
-
-
-        function getDayOfWeek(day) {
-            const month = parseInt(monthInput.value, 10) - 1;
-            const year = parseInt(yearInput.value, 10);
-            
-            if (isNaN(month) || isNaN(year) || month < 0 || month > 11 || year < 1900) {
-                return { dayName: '', isWeekend: false, isValid: false }; 
-            }
-
-            const date = new Date(year, month, day);
-            
-            if (date.getMonth() !== month) {
-                 return { dayName: ' ', isWeekend: false, isValid: false };
-            }
-            
-            const dayIndex = date.getDay();
-            const dayName = dayNames[dayIndex];
-            
-            const isWeekend = (dayIndex === 0 || dayIndex === 6);
-
-            return { dayName, isWeekend, isValid: true };
-        }
-
         /**
-         * FUNKCE PRO PŘEVOD ČASU NA MINUTY - UPRAVENO PRO ZPRACOVÁNÍ TEČKY
+         * Převede časový řetězec ("HH:MM") na minuty.
+         * @param {string} time - Čas ve formátu HH:MM
+         * @returns {number} Minuty od půlnoci
          */
         function timeToMinutes(time) {
             if (!time) return 0;
-            
-            let timeString = String(time).trim();
-            
-            // 1. Nahrazení tečky dvojtečkou (pro zadání např. 7.30)
-            timeString = timeString.replace('.', ':');
-            
-            // 2. Kontrola formátu HH:MM
-            const parts = timeString.split(':');
-            
-            if (parts.length < 2) {
-                // Pokud je zadáno jen číslo (např. "6"), předpokládáme celé hodiny
-                const hours = parseInt(parts[0], 10);
-                if (isNaN(hours)) return 0;
-                return hours * 60;
-            }
-            
-            const hours = parseInt(parts[0], 10);
-            const minutes = parseInt(parts[1], 10);
-
-            if (isNaN(hours) || isNaN(minutes)) return 0;
-            
+            const [hours, minutes] = time.split(':').map(Number);
             return hours * 60 + minutes;
         }
 
-        function getStorageKey() {
-            const month = monthInput.value || '00';
-            const year = yearInput.value || '0000';
-            return `dochazkaData_${month}-${year}`;
-        }
-        
-        function setCurrentMonth() {
-            const now = new Date();
-            const currentMonth = (now.getMonth() + 1).toString().padStart(2, '0');
-            const currentYear = now.getFullYear();
-            
-            if (!monthInput.value) monthInput.value = currentMonth;
-            if (!yearInput.value) yearInput.value = currentYear;
-        }
-
-        function getCurrentData() {
-            const data = [];
-            for (let i = 0; i < ATTENDANCE_DAYS; i++) {
-                const dayIndex = i;
-                const p1Element = document.getElementById(`p1-${dayIndex}`);
-                if (!p1Element) continue;
-
-                const dayData = {
-                    p1: p1Element.value,
-                    o1: document.getElementById(`o1-${dayIndex}`).value,
-                    p2: document.getElementById(`p2-${dayIndex}`).value,
-                    o2: document.getElementById(`o2-${dayIndex}`).value,
-                    note: document.getElementById(`note-${dayIndex}`).value
-                };
-                data.push(dayData);
-            }
-            return data;
-        }
-
-        function saveData() {
-            const data = getCurrentData();
-            localStorage.setItem(getStorageKey(), JSON.stringify(data));
-        }
-
-        function archiveData() {
-            alert('Archivace probíhá automaticky! Data jsou uložena pod klíčem aktuálního měsíce/roku. Pro "zálohování" si stačí opsat zadaný Měsíc a Rok.');
-        }
-
-        function clearData() {
-            if (confirm(`POZOR! Opravdu chcete smazat VŠECHNA data pro měsíc ${monthInput.value}/${yearInput.value}?`)) {
-                localStorage.removeItem(getStorageKey());
-                location.reload(); 
-            }
-        }
-
-        function loadData() {
-            const storedData = localStorage.getItem(getStorageKey());
-            
-            for (let i = 0; i < ATTENDANCE_DAYS; i++) {
-                const dayIndex = i;
-                const p1Element = document.getElementById(`p1-${dayIndex}`);
-                if (!p1Element) continue; 
-
-                p1Element.value = '';
-                document.getElementById(`o1-${dayIndex}`).value = '';
-                document.getElementById(`p2-${dayIndex}`).value = '';
-                document.getElementById(`o2-${dayIndex}`).value = '';
-                document.getElementById(`note-${dayIndex}`).value = '';
-            }
-            
-            if (storedData) {
-                const data = JSON.parse(storedData);
-                for (let i = 0; i < ATTENDANCE_DAYS; i++) {
-                    const dayIndex = i;
-                    const p1Element = document.getElementById(`p1-${dayIndex}`);
-                    if (!p1Element) continue; 
-
-                    if (data[i]) {
-                        p1Element.value = data[i].p1 || '';
-                        document.getElementById(`o1-${dayIndex}`).value = data[i].o1 || '';
-                        document.getElementById(`p2-${dayIndex}`).value = data[i].p2 || '';
-                        document.getElementById(`o2-${dayIndex}`).value = data[i].o2 || '';
-                        document.getElementById(`note-${dayIndex}`).value = data[i].note || '';
-                    }
-                }
-            }
-            calculateTotalHours(); 
-        }
-
-        function calculateAndSave(dayIndex) {
-            calculateDayHours(dayIndex);
-            saveData();
-        }
-
+        /**
+         * Vypočítá celkový počet hodin pro daný den.
+         * @param {number} dayIndex - Index dne (0 až 30)
+         */
         function calculateDayHours(dayIndex) {
-            const p1 = document.getElementById(`p1-${dayIndex}`).value;
-            const o1 = document.getElementById(`o1-${dayIndex}`).value;
-            const p2 = document.getElementById(`p2-${dayIndex}`).value;
-            const o2 = document.getElementById(`o2-${dayIndex}`).value;
+            const inputs = timeInputs[dayIndex];
+            
+            // Získání hodnot (času ve formátu HH:MM)
+            const p1 = inputs.p1.value;
+            const o1 = inputs.o1.value;
+            const p2 = inputs.p2.value;
+            const o2 = inputs.o2.value;
 
+            // Převod na minuty od půlnoci
             const minutesP1 = timeToMinutes(p1);
             const minutesO1 = timeToMinutes(o1);
             const minutesP2 = timeToMinutes(p2);
@@ -359,10 +131,13 @@
             
             let totalMinutes = 0;
 
+            // První část: Odchod 1 - Příchod 1
             if (minutesO1 > minutesP1 && p1 && o1) {
                 totalMinutes += (minutesO1 - minutesP1);
             }
 
+            // Druhá část: Odchod 2 - Příchod 2
+            // P2 musí být po O1, aby to bylo validní
             if (minutesO2 > minutesP2 && p2 && o2 && minutesP2 >= minutesO1) { 
                 totalMinutes += (minutesO2 - minutesP2);
             }
@@ -370,11 +145,16 @@
             const hours = (totalMinutes / 60).toFixed(2);
             document.getElementById(`hours-${dayIndex}`).textContent = hours;
             
+            // Po dokončení výpočtu dne přepočítáme celkový součet
             calculateTotalHours();
         }
 
+        /**
+         * Vypočítá celkový součet všech hodin.
+         */
         function calculateTotalHours() {
             let totalHours = 0;
+            // Projdeme všechny prvky s denními výsledky a sečteme je
             document.querySelectorAll('[id^="hours-"]').forEach(span => {
                 totalHours += parseFloat(span.textContent || 0);
             });
@@ -382,49 +162,32 @@
             totalValueSpan.textContent = totalHours.toFixed(2);
         }
 
+        /**
+         * Generuje HTML pro jeden den docházky.
+         * @param {number} day - Číslo dne (1 až 31)
+         */
         function createDayCard(day) {
-            const dayIndex = day - 1;
-            
-            const dayInfo = getDayOfWeek(day);
-
-            if (!dayInfo.isValid) {
-                return; 
-            }
-
+            const dayIndex = day - 1; // Index 0-30
             const card = document.createElement('div');
-            
-            card.className = dayInfo.isWeekend ? 'day-card weekend-card' : 'day-card';
-            
-            const dayLabelClass = dayInfo.isWeekend ? 'weekend-day-label' : 'weekday-label';
-            
-            const inputChangeAction = `calculateAndSave(${dayIndex})`;
-
+            card.className = 'day-card';
             card.innerHTML = `
-                <div class="day-label ${dayLabelClass}">
-                    <span class="day-number">Den ${day}.</span>
-                    <span class="day-name">${dayInfo.dayName}</span>
-                </div>
+                <div class="day-label">Den ${day}.</div>
                 
                 <div class="time-entry">
                     <label for="p1-${dayIndex}">Příchod 1:</label>
-                    <input type="text" id="p1-${dayIndex}" onchange="${inputChangeAction}" placeholder="HH:MM" value="">
+                    <input type="time" id="p1-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
                 </div>
                 <div class="time-entry">
                     <label for="o1-${dayIndex}">Odchod 1:</label>
-                    <input type="text" id="o1-${dayIndex}" onchange="${inputChangeAction}" placeholder="HH:MM" value="">
+                    <input type="time" id="o1-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
                 </div>
                 <div class="time-entry">
                     <label for="p2-${dayIndex}">Příchod 2:</label>
-                    <input type="text" id="p2-${dayIndex}" onchange="${inputChangeAction}" placeholder="HH:MM" value="">
+                    <input type="time" id="p2-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
                 </div>
                 <div class="time-entry">
                     <label for="o2-${dayIndex}">Odchod 2:</label>
-                    <input type="text" id="o2-${dayIndex}" onchange="${inputChangeAction}" placeholder="HH:MM" value="">
-                </div>
-
-                <div class="note-input-row">
-                    <label for="note-${dayIndex}">Poznámka / Místo:</label>
-                    <input type="text" id="note-${dayIndex}" placeholder="Např.: Tetín, Home Office..." onchange="${inputChangeAction}">
+                    <input type="time" id="o2-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
                 </div>
 
                 <div class="result-hours">
@@ -434,6 +197,7 @@
             `;
             attendanceList.appendChild(card);
             
+            // Uložení referencí na inputy pro snadný přístup v JS
             timeInputs[dayIndex] = {
                 p1: document.getElementById(`p1-${dayIndex}`),
                 o1: document.getElementById(`o1-${dayIndex}`),
@@ -441,18 +205,227 @@
                 o2: document.getElementById(`o2-${dayIndex}`)
             };
         }
-        
-        function regenerateCards() {
-            attendanceList.innerHTML = ''; 
-            for (let i = 1; i <= ATTENDANCE_DAYS; i++) {
-                createDayCard(i);
-            }
+
+        // Generování všech 31 dní
+        for (let i = 1; i <= ATTENDANCE_DAYS; i++) {
+            createDayCard(i);
         }
 
-        function init() {
-            setCurrentMonth();
-            regenerateCards(); 
-            loadData();
+    </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docházkový Lístek</title>
+    <style>
+        /* Základní styly pro mobil */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        /* Kontejner pro zobrazení karty na mobilu */
+        .day-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            border-left: 5px solid #007bff;
+        }
+
+        .day-label {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        /* Rozvržení inputů do dvou sloupců */
+        .time-entry {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .time-entry label {
+            flex-basis: 45%;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .time-entry input[type="time"] {
+            flex-basis: 50%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Zahrne padding do šířky */
+            font-size: 1em;
+        }
+
+        /* Speciální styl pro výsledek */
+        .result-hours {
+            margin-top: 15px;
+            padding: 8px 0;
+            border-top: 1px dashed #ccc;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+        
+        /* Celkový součet hodin */
+        #totalHours {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>KONTROLNÍ LÍSTEK Docházka</h1>
+
+    <div id="attendance-list">
+        </div>
+
+    <div id="totalHours">
+        Celkem hodin: <span id="totalValue">0.00</span>
+    </div>
+
+    <script>
+        const ATTENDANCE_DAYS = 31; // Počet dní v měsíci
+        const attendanceList = document.getElementById('attendance-list');
+        const totalValueSpan = document.getElementById('totalValue');
+        const timeInputs = [];
+
+        /**
+         * Převede časový řetězec ("HH:MM") na minuty.
+         * @param {string} time - Čas ve formátu HH:MM
+         * @returns {number} Minuty od půlnoci
+         */
+        function timeToMinutes(time) {
+            if (!time) return 0;
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        /**
+         * Vypočítá celkový počet hodin pro daný den.
+         * @param {number} dayIndex - Index dne (0 až 30)
+         */
+        function calculateDayHours(dayIndex) {
+            const inputs = timeInputs[dayIndex];
+            
+            // Získání hodnot (času ve formátu HH:MM)
+            const p1 = inputs.p1.value;
+            const o1 = inputs.o1.value;
+            const p2 = inputs.p2.value;
+            const o2 = inputs.o2.value;
+
+            // Převod na minuty od půlnoci
+            const minutesP1 = timeToMinutes(p1);
+            const minutesO1 = timeToMinutes(o1);
+            const minutesP2 = timeToMinutes(p2);
+            const minutesO2 = timeToMinutes(o2);
+            
+            let totalMinutes = 0;
+
+            // První část: Odchod 1 - Příchod 1
+            if (minutesO1 > minutesP1 && p1 && o1) {
+                totalMinutes += (minutesO1 - minutesP1);
+            }
+
+            // Druhá část: Odchod 2 - Příchod 2
+            // P2 musí být po O1, aby to bylo validní
+            if (minutesO2 > minutesP2 && p2 && o2 && minutesP2 >= minutesO1) { 
+                totalMinutes += (minutesO2 - minutesP2);
+            }
+            
+            const hours = (totalMinutes / 60).toFixed(2);
+            document.getElementById(`hours-${dayIndex}`).textContent = hours;
+            
+            // Po dokončení výpočtu dne přepočítáme celkový součet
+            calculateTotalHours();
+        }
+
+        /**
+         * Vypočítá celkový součet všech hodin.
+         */
+        function calculateTotalHours() {
+            let totalHours = 0;
+            // Projdeme všechny prvky s denními výsledky a sečteme je
+            document.querySelectorAll('[id^="hours-"]').forEach(span => {
+                totalHours += parseFloat(span.textContent || 0);
+            });
+            
+            totalValueSpan.textContent = totalHours.toFixed(2);
+        }
+
+        /**
+         * Generuje HTML pro jeden den docházky.
+         * @param {number} day - Číslo dne (1 až 31)
+         */
+        function createDayCard(day) {
+            const dayIndex = day - 1; // Index 0-30
+            const card = document.createElement('div');
+            card.className = 'day-card';
+            card.innerHTML = `
+                <div class="day-label">Den ${day}.</div>
+                
+                <div class="time-entry">
+                    <label for="p1-${dayIndex}">Příchod 1:</label>
+                    <input type="time" id="p1-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
+                </div>
+                <div class="time-entry">
+                    <label for="o1-${dayIndex}">Odchod 1:</label>
+                    <input type="time" id="o1-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
+                </div>
+                <div class="time-entry">
+                    <label for="p2-${dayIndex}">Příchod 2:</label>
+                    <input type="time" id="p2-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
+                </div>
+                <div class="time-entry">
+                    <label for="o2-${dayIndex}">Odchod 2:</label>
+                    <input type="time" id="o2-${dayIndex}" onchange="calculateDayHours(${dayIndex})" value="">
+                </div>
+
+                <div class="result-hours">
+                    <span>Odpracováno:</span>
+                    <span id="hours-${dayIndex}">0.00</span>
+                </div>
+            `;
+            attendanceList.appendChild(card);
+            
+            // Uložení referencí na inputy pro snadný přístup v JS
+            timeInputs[dayIndex] = {
+                p1: document.getElementById(`p1-${dayIndex}`),
+                o1: document.getElementById(`o1-${dayIndex}`),
+                p2: document.getElementById(`p2-${dayIndex}`),
+                o2: document.getElementById(`o2-${dayIndex}`)
+            };
+        }
+
+        // Generování všech 31 dní
+        for (let i = 1; i <= ATTENDANCE_DAYS; i++) {
+            createDayCard(i);
         }
 
     </script>
