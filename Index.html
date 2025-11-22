@@ -310,17 +310,7 @@
         function loadData() {
             const storedData = localStorage.getItem(getStorageKey());
             
-            for (let i = 0; i < ATTENDANCE_DAYS; i++) {
-                const dayIndex = i;
-                const p1Element = document.getElementById(`p1-${dayIndex}`);
-                if (!p1Element) continue; 
-
-                p1Element.value = '';
-                document.getElementById(`o1-${dayIndex}`).value = '';
-                document.getElementById(`p2-${dayIndex}`).value = '';
-                document.getElementById(`o2-${dayIndex}`).value = '';
-                document.getElementById(`note-${dayIndex}`).value = '';
-            }
+            
             
             if (storedData) {
                 const data = JSON.parse(storedData);
